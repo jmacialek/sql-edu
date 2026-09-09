@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment & Secret variables
+.env
+.env.local
+.env.*
+*.pgpass
+*.key
+*.pem
+*.cert
+
+# Local diagnostics, crash logs & core dumps
+hs_err_pid*.log
+core.*
+*.log
+inventory/
+scripts/
+scratch/
+tmp/
+
+# OS and IDE artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
