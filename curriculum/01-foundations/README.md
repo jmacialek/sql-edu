@@ -1,73 +1,113 @@
-# Phase 1: SQL Foundations & Core Queries
+# Phase 1: Absolute Beginner SQL Foundations — The Zero-Experience Primer
 
-Welcome to the beginning of your SQL mastery journey. Phase 1 establishes rock-solid intuition for the relational model, declarative query syntax, data types, filtering logic, and statistical aggregations.
+**Welcome to your first step in SQL!** 
 
----
-
-## 🎯 Learning Objectives
-
-By the end of this module, you will master:
-1. **The Declarative Paradigm**: Understanding what to ask for rather than how to retrieve it.
-2. **Execution Order vs Written Order**: Why `WHERE` cannot filter on alias names defined in `SELECT`.
-3. **Core Data Types**: `INTEGER`, `BIGINT`, `NUMERIC(p,s)`, `VARCHAR`, `TEXT`, `BOOLEAN`, `DATE`, and `TIMESTAMPTZ`.
-4. **Three-Valued Logic (3VL)**: How `NULL` behaves with `AND`, `OR`, `NOT`, and `IS NULL`.
-5. **Set Aggregations & Grouping**: `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`, `GROUP BY`, and `HAVING`.
+This module is designed specifically for someone who has **never written a line of SQL before**. There are no assumptions of prior programming knowledge, no unnecessary jargon, and every concept is broken down with simple visual analogies.
 
 ---
 
-## 🧠 Mental Model: SQL Logical Query Processing Order
+## 🧠 Part 1: The Mental Model (Before Writing Any Code)
 
-Unlike procedural languages (Python, Go, C) which execute sequentially from top to bottom, SQL engines evaluate query clauses in a distinct logical order:
+### What is a Database?
+Think of a database as an **Excel Workbook**. 
+* Inside an Excel workbook, you have multiple tabs or spreadsheets.
+* In a relational database, each spreadsheet tab is called a **Table**.
 
-```mermaid
-graph TD
-    FROM["1. FROM & JOIN (Identify tables and build Cartesian products)"] --> WHERE["2. WHERE (Filter individual rows)"]
-    WHERE --> GROUP["3. GROUP BY (Aggregate rows into buckets)"]
-    GROUP --> HAVING["4. HAVING (Filter aggregated buckets)"]
-    HAVING --> SELECT["5. SELECT (Evaluate expressions, aliases & columns)"]
-    SELECT --> DISTINCT["6. DISTINCT (Deduplicate output)"]
-    DISTINCT --> ORDER["7. ORDER BY (Sort final rows)"]
-    ORDER --> LIMIT["8. LIMIT / OFFSET (Slice result window)"]
+```
+Database: sqledu (Workbook)
+├── Table: employees   (Sheet 1: 15 employee records)
+├── Table: departments (Sheet 2: 5 department records)
+└── Table: projects    (Sheet 3: 5 project records)
 ```
 
-> [!IMPORTANT]
-> Because **`SELECT`** is evaluated *after* **`WHERE`** and **`GROUP BY`**, you cannot reference a column alias created in `SELECT` within your `WHERE` clause!
+### Rows vs. Columns
+Look at any table:
+* **Rows (Records)**: Run horizontally (left to right). Each row represents **one single item** (e.g. one specific employee, one hospital claim).
+* **Columns (Fields / Attributes)**: Run vertically (top to bottom). Each column represents **one piece of information** about that item (e.g. `first_name`, `salary`, `hire_date`).
 
----
-
-## 📂 Module Files & Hands-On Exercises
-
-| File | Description | Execution Command |
-| :--- | :--- | :--- |
-| [**`01-schema-and-seed.sql`**](01-schema-and-seed.sql) | DDL schema creation and mock tech company dataset (`employees`, `departments`, `projects`). | `psql -h <database-host> -U <username> -d sqledu -f 01-schema-and-seed.sql` |
-| [**`02-queries-and-filtering.sql`**](02-queries-and-filtering.sql) | Core SELECT, column aliasing, mathematical expressions, `WHERE` predicates, pattern matching (`LIKE`/`ILIKE`), and `NULL` handling. | Interactive in DBeaver / `pgcli` |
-| [**`03-aggregations-and-grouping.sql`**](03-aggregations-and-grouping.sql) | Statistical rollups, `GROUP BY`, multi-column grouping, and conditional filtering with `HAVING`. | Interactive in DBeaver / `pgcli` |
-
----
-
-## ⚡ Quick Start: Running the Lab
-
-From `starbuntu`, execute the seed script against `sql-edu`:
-
-```bash
-psql -h <database-host> -U <username> -d sqledu -f curriculum/01-foundations/01-schema-and-seed.sql
+```
+           COLUMN: first_name      COLUMN: salary
+                │                        │
+                ▼                        ▼
+┌──────────────┬────────────────────────┬─────────────┐
+│ employee_id  │ first_name  last_name  │ salary      │
+├──────────────┼────────────────────────┼─────────────┤
+│ 1            │ Sarah       Connor     │ 240000.00   │ ◄── ROW 1 (One Person)
+│ 2            │ Marcus      Vance      │ 210000.00   │ ◄── ROW 2 (Another Person)
+│ 3            │ David       Chen       │ 185000.00   │ ◄── ROW 3 (Another Person)
+└──────────────┴────────────────────────┴─────────────┘
 ```
 
-Then open **DBeaver** or start an interactive session with **`pgcli`**:
+### What is SQL?
+**SQL** stands for *Structured Query Language*. 
+Unlike programming languages like Python or C (which tell the computer step-by-step *how* to calculate something), SQL is **declarative**:
+> **You simply tell the database WHAT you want, and the database engine figures out HOW to retrieve it.**
 
-```bash
-pgcli -h <database-host> -U <username> -d sqledu
-```
+In plain English, every basic SQL query is just a sentence:
+> *"Show me (`SELECT`) the names and salaries from (`FROM`) the employees table where (`WHERE`) they earn more than $100,000, sorted (`ORDER BY`) from highest to lowest."*
 
 ---
 
-## 🏆 Key Interview Takeaways
+## 📚 Part 2: The Core SQL Vocabulary
 
-1. **`COUNT(*)` vs `COUNT(column)`**:
-   * `COUNT(*)` counts the total number of rows returned, including rows with NULL values.
-   * `COUNT(column)` counts only rows where the specified column is **NOT NULL**.
-2. **`WHERE` vs `HAVING`**:
-   * `WHERE` filters individual rows *before* aggregation occurs.
-   * `HAVING` filters aggregated group records *after* `GROUP BY` has collapsed the rows.
-3. **`NULL = NULL` is UNKNOWN**:
-   * In SQL's three-valued logic, `NULL` represents an unknown value. It cannot equal anything, not even another `NULL`. Always use `IS NULL` or `IS NOT NULL`.
+### 1. `SELECT` (The "Show Me" command)
+Tells the database which **columns** you want to display on your screen.
+* `SELECT first_name, salary` = Only show me these two columns.
+* `SELECT *` = The asterisk `*` is a wildcard meaning "Show me **every** column in the table".
+
+### 2. `FROM` (The "Look in this table" command)
+Tells the database which table holds the data.
+* `FROM employees;` = Look in the table named `employees`.
+
+### 3. `WHERE` (The Bouncer / Filter)
+Tells the database to only keep **rows** that meet a specific condition.
+* `WHERE salary > 100000` = Only keep people making more than $100k.
+* `WHERE job_title = 'Software Engineer'` = Only keep exact matches.
+* *Rule*: Text values **must** be inside single quotes (`'Engineering'`). Numbers do not use quotes (`100000`).
+
+### 4. `ORDER BY` (The Organizer)
+Sorts your output.
+* `ORDER BY salary DESC` = Highest to lowest (Descending).
+* `ORDER BY salary ASC`  = Lowest to highest (Ascending, the default).
+
+### 5. `LIMIT` (The Cap)
+Controls how many rows appear on your screen.
+* `LIMIT 5` = Only give me the first 5 rows (great for "Top 5" lists).
+
+---
+
+## 📂 Step-by-Step Hands-on Lessons
+
+Open DBeaver, press `Ctrl + O`, and open these lesson files directly from `~/repos/sql-edu/curriculum/01-foundations/`:
+
+| Lesson | Script File | What You Will Learn |
+| :---: | :--- | :--- |
+| **Setup** | [**`01-schema-and-seed.sql`**](01-schema-and-seed.sql) | Creates the `foundations` schema and loads sample data. *(Already executed on your server!)* |
+| **01** | [**`02-first-steps-select-and-from.sql`**](02-first-steps-select-and-from.sql) | Exploring tables with `SELECT *`, choosing specific columns, and renaming column headers with `AS`. |
+| **02** | [**`03-filtering-rows-with-where.sql`**](03-filtering-rows-with-where.sql) | The `WHERE` filter: comparing numbers (`>`, `<`, `=`), matching text with `'single quotes'`, and filtering dates. |
+| **03** | [**`04-combining-conditions-and-or-in.sql`**](04-combining-conditions-and-or-in.sql) | Multi-rule filtering with `AND`, `OR`, list matching with `IN`, range checking with `BETWEEN`, and text searching with `ILIKE`. |
+| **04** | [**`05-sorting-limiting-and-nulls.sql`**](05-sorting-limiting-and-nulls.sql) | Sorting with `ORDER BY`, finding Top 3 with `LIMIT`, and understanding what `NULL` (missing data) really means. |
+| **05** | [**`06-practice-challenges-and-solutions.sql`**](06-practice-challenges-and-solutions.sql) | 6 real practice challenges to test yourself, with full official solutions included at the bottom. |
+
+---
+
+## ⚠️ The 5 Most Common Beginner Mistakes (And How to Avoid Them)
+
+1. **Using Double Quotes for Text**:
+   * ❌ `WHERE job_title = "Engineer"` *(Double quotes mean table or column name in SQL!)*
+   * ✅ `WHERE job_title = 'Engineer'` *(Single quotes are for data values!)*
+2. **Missing Commas Between Columns**:
+   * ❌ `SELECT first_name last_name salary FROM employees;` *(SQL thinks you are renaming `first_name`!)*
+   * ✅ `SELECT first_name, last_name, salary FROM employees;` *(Always separate columns with commas!)*
+3. **Trying to test `NULL` with an Equals Sign**:
+   * ❌ `WHERE manager_id = NULL` *(This will ALWAYS return 0 rows because nothing equals unknown!)*
+   * ✅ `WHERE manager_id IS NULL` *(Always use `IS NULL` or `IS NOT NULL`!)*
+4. **Putting Clauses in the Wrong Order**:
+   * SQL requires clauses in a strict grammar order:
+     1. `SELECT`
+     2. `FROM`
+     3. `WHERE`
+     4. `ORDER BY`
+     5. `LIMIT`
+5. **Forgetting the Semicolon `;`**:
+   * Always end your queries with a semicolon `;` so the database knows you are done.

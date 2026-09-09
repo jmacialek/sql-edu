@@ -15,13 +15,13 @@
 
 ## 📖 Overview & Purpose
 
-**`sql-edu`** documents the application of relational database engineering to real-world healthcare quality assurance, data reconciliation, and executive governance. 
+**`sql-edu`** documents the complete journey from **absolute beginner SQL fundamentals** to **production-grade healthcare data reconciliation and audit governance**.
 
-This repository models complex benefit structures, audits claims adjudication logic, identifies accumulator leakage, and tracks offshore audit contractor performance scorecards using **PostgreSQL 18**, **Metabase BI**, and **DBeaver**.
+Designed like an end-to-end curriculum, this repository starts from absolute ground zero—assuming zero prior programming knowledge—and methodically builds up to advanced SQL data validation, claims adjudication auditing, accumulator leakage detection, and executive scorecards using **PostgreSQL 18**, **Metabase BI**, and **DBeaver**.
 
 ---
 
-## 🏗️ Architecture & Tooling Topology
+## 🏗️ Architecture & Lab Topology
 
 ```mermaid
 graph LR
@@ -32,11 +32,11 @@ graph LR
     end
 
     subgraph Engine ["PostgreSQL Relational Engine"]
-        PG["PostgreSQL Cluster (:5432)"]
+        PG["PostgreSQL 18 Cluster (:5432)"]
         
         subgraph Schemas ["Database: sqledu"]
-            S1["foundations (Syntax, Projections, & Aggregations)"]
-            S2["benefit_audit (Plan Build QA & Governance)"]
+            S1["foundations (Syntax, Projections, & Filtering)"]
+            S2["benefit_audit (Healthcare Plan QA & Audits)"]
         end
         
         PG --> S1
@@ -64,12 +64,15 @@ graph LR
 
 | Phase | Module & Focus | Topics & Technical Capabilities | Status |
 | :---: | :--- | :--- | :---: |
-| **01** | [**SQL Foundations & Core Syntax**](curriculum/01-foundations/README.md) | Logical execution order, projection, `WHERE` filtering, 3VL `NULL` logic, `GROUP BY`, `HAVING`, and aggregate functions. | ![Complete](https://img.shields.io/badge/Complete-brightgreen) |
-| **02** | [**Healthcare Plan Build Quality & Audit**](curriculum/02-benefit-configuration-audit/README.md) | SPD matrix validation, accumulator boundary over-accumulation, post-termination claims leakage, offshore vendor SLA tracking, and First-Pass Yield (FPY %). | ![Active](https://img.shields.io/badge/Active-brightgreen) |
-| **03** | **Advanced Joins & Relational Integrity** | Multi-table joins, anti-joins for discrepancy detection, self-joins, cross joins for benefit tier matrix permutation. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
-| **04** | **Subqueries, CTEs & Recursive Hierarchies** | Correlated subqueries, Common Table Expressions, recursive hierarchy traversals (reporting trees, benefit riders). | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
-| **05** | **Window Functions & Trend Analysis** | `OVER()`, `PARTITION BY`, `ROW_NUMBER()`, `RANK()`, `LEAD()`, `LAG()`, rolling 30-day defect trends, cumulative claims spend. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
-| **06** | **Performance Tuning & Query Execution Plans** | `EXPLAIN (ANALYZE, BUFFERS)`, indexing strategies (B-Tree, GIN, Partial Indexes), join cost optimization. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
+| **01** | **Lab Architecture & Learning Environment Setup** | Dedicated PostgreSQL 18 relational engine, Metabase BI service, DBeaver IDE desktop integration, and public GitHub repository implementation. | ![Complete](https://img.shields.io/badge/Complete-brightgreen) |
+| **02** | [**Absolute Beginner SQL: Zero to Query**](curriculum/01-foundations/README.md) | The mental model (Tables, Rows, Columns), declarative syntax, `SELECT`, `FROM`, column aliasing (`AS`), `WHERE` filters, `AND`/`OR`, `IN`, `BETWEEN`, `ILIKE`, `ORDER BY`, `LIMIT`, and handling `NULL` values. | ![Active](https://img.shields.io/badge/Active-brightgreen) |
+| **03** | **Calculated Columns, Expressions & CASE Logic** | Arithmetic operations, percentages, string functions, date manipulation (`CURRENT_DATE`, `AGE()`), and conditional branching with `CASE WHEN ... THEN ... ELSE ... END`. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
+| **04** | **Summary Statistics, Aggregations & Grouping** | Reducing records with `COUNT(*)`, `SUM()`, `AVG()`, `MIN()`, `MAX()`, multi-column `GROUP BY`, the critical difference between `WHERE` and `HAVING`, and `FILTER (WHERE ...)`. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
+| **05** | **Connecting Tables: Relational Joins** | Why normalize tables? Primary Keys vs. Foreign Keys, `INNER JOIN`, `LEFT JOIN`, anti-joins for discrepancy discovery, `FULL OUTER JOIN`, and `CROSS JOIN`. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
+| **06** | [**Healthcare Plan Build Quality & Audit**](curriculum/02-benefit-configuration-audit/README.md) | Summary Plan Description (SPD) matrix validation, accumulator boundary over-accumulation ($3,600 vs $3,000 cap), post-termination claims leakage, and unauthorized inpatient surgery detection. | ![Complete](https://img.shields.io/badge/Complete-brightgreen) |
+| **07** | **Subqueries & Common Table Expressions (CTEs)** | Scalar and multi-row subqueries (`IN`, `EXISTS`), modular SQL pipelines with `WITH ... AS (...)` (CTEs), and query readability best practices. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
+| **08** | **Window Functions & Trend Analysis** | Analytical rollups without collapsing rows: `OVER()`, `PARTITION BY`, `ROW_NUMBER()`, `RANK()`, `DENSE_RANK()`, `LEAD()`, `LAG()`, rolling 30-day trends, and cumulative spend. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
+| **09** | **Executive Governance Scorecards & Metabase Dashboards** | First-Pass Yield (FPY %) metrics by work item type, offshore contractor vendor SLA scorecards (Cognizant, Wipro, Infosys), defect Pareto root-cause analysis, and visual BI dashboards. | ![Planned](https://img.shields.io/badge/Planned-lightgrey) |
 
 ---
 
@@ -97,13 +100,16 @@ sql-edu/
 │   ├── 01-connection-guide.md                 # DBeaver, pgcli, and psql setup
 │   └── 02-metabase-setup.md                   # Metabase BI Portal configuration
 └── curriculum/                                # Progressive, hands-on SQL curriculum
-    ├── 01-foundations/                        # Phase 1: Core syntax & aggregations
-    │   ├── README.md
-    │   ├── 01-schema-and-seed.sql
-    │   ├── 02-queries-and-filtering.sql
-    │   └── 03-aggregations-and-grouping.sql
-    └── 02-benefit-configuration-audit/        # Phase 2: Healthcare Plan Build QA
-        ├── README.md
+    ├── 01-foundations/                        # Phase 2: Absolute Beginner SQL Foundations
+    │   ├── README.md                          # Comprehensive textbook & mental models
+    │   ├── 01-schema-and-seed.sql             # Reproducible DDL & sample data
+    │   ├── 02-first-steps-select-and-from.sql # Lesson 1: SELECT, FROM, and aliasing (AS)
+    │   ├── 03-filtering-rows-with-where.sql   # Lesson 2: WHERE, comparisons, text quotes
+    │   ├── 04-combining-conditions-and-or-in.sql # Lesson 3: AND/OR, IN, BETWEEN, ILIKE
+    │   ├── 05-sorting-limiting-and-nulls.sql  # Lesson 4: ORDER BY, LIMIT, and NULL logic
+    │   └── 06-practice-challenges-and-solutions.sql # Lesson 5: 6 practice labs + answer key
+    └── 02-benefit-configuration-audit/        # Phase 6: Healthcare Plan Build QA
+        ├── README.md                          # Domain architecture & audit workflow
         ├── 01-healthcare-schema-and-seed.sql  # Plan documents, claims, & audit tables
         ├── 02-audit-reconciliation-queries.sql# Mismatch audits & accumulator leakage
         └── 03-executive-quality-scorecards.sql# FPY %, SLA adherence, & Pareto root cause
