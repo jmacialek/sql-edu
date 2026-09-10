@@ -15,6 +15,8 @@
 
 ## 📖 Overview & Purpose
 
+Built as a hands-on SQL refresher using synthetic healthcare payer data modeled around benefit configuration, claims adjudication, eligibility, accumulator processing, quality auditing, and vendor governance scenarios drawn from my professional domain experience.
+
 **`sql-edu`** documents the complete journey from **absolute beginner SQL fundamentals** to **production-grade healthcare data reconciliation and audit governance**.
 
 Designed like an end-to-end curriculum, this repository starts from absolute ground zero—assuming zero prior programming knowledge—and methodically builds up to advanced SQL data validation, claims adjudication auditing, accumulator leakage detection, and executive scorecards using **PostgreSQL 18**, **Metabase BI**, and **DBeaver**.
